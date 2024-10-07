@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "module": "ESNext",
+    "target": "ES6",
+    "module": "commonjs",
+    "skipLibCheck": true,
     "moduleResolution": "node"
   }
 }
