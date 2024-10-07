@@ -12,7 +12,7 @@ const USDT_TOKEN_ADDRESS = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
 const NOT_TOKEN_ADDRESS = 'EQAvlWFDxGF2lXm67y4yzC17wYKD9A0guwPkMs1gOsM__NOT';
 
 // Batch size for processing
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 10;
 
 async function queryBalances() {
     const client = new MongoClient(uri);
