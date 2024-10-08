@@ -12,7 +12,7 @@ const USDT_TOKEN_ADDRESS = 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs';
 const NOT_TOKEN_ADDRESS = 'EQAvlWFDxGF2lXm67y4yzC17wYKD9A0guwPkMs1gOsM__NOT';
 
 // Batch size for processing
-const BATCH_SIZE = 10;
+const BATCH_SIZE = 20;
 
 async function queryBalances() {
     const client = new MongoClient(uri);
@@ -43,15 +43,22 @@ async function queryBalances() {
                 }
 
                 try {
-                    // Query balances
+                    // Query TON balance
                     const tonBalance = await tonWalletBalance.getTonBalance(wallet_address);
-                    const usdtBalance = await tonWalletBalance.getJettonBalance(wallet_address, USDT_TOKEN_ADDRESS);
-                    const notBalance = await tonWalletBalance.getJettonBalance(wallet_address, NOT_TOKEN_ADDRESS);
+
+                    let usdtBalance = null;
+                    let notBalance = null;
+
+                    // Only query USDT and NOT balances if TON balance is greater than 0
+                    if (tonBalance > 0) {
+                        usdtBalance = await tonWalletBalance.getJettonBalance(wallet_address, USDT_TOKEN_ADDRESS);
+                        notBalance = await tonWalletBalance.getJettonBalance(wallet_address, NOT_TOKEN_ADDRESS);
+                    }
 
                     // Write results to the new collection
                     await resultCollection.updateOne(
                         { wallet_address },
-                        { $set: { tonBalance, usdtBalance: usdtBalance.balance, notBalance: notBalance.balance } },
+                        { $set: { tonBalance, usdtBalance: usdtBalance ? usdtBalance.balance : null, notBalance: notBalance ? notBalance.balance : null } },
                         { upsert: true }
                     );
                 } catch (error) {

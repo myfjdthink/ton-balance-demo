@@ -24,8 +24,12 @@ async function calculateTotalAssets() {
             const document = await cursor.next();
             const { wallet_address, notBalance, tonBalance, usdtBalance } = document;
 
+            // Handle null values by defaulting to 0
+            const notBalanceValue = notBalance !== null ? notBalance : 0;
+            const usdtBalanceValue = usdtBalance !== null ? usdtBalance : 0;
+
             // Calculate total assets
-            const totalAsset = (notBalance * NOT_PRICE) + (tonBalance * TON_PRICE) + (usdtBalance * USDT_PRICE);
+            const totalAsset = (notBalanceValue * NOT_PRICE) + (tonBalance * TON_PRICE) + (usdtBalanceValue * USDT_PRICE);
 
             // Update the document with the total asset value
             await collection.updateOne(
